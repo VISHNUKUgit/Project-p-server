@@ -31,9 +31,11 @@ exports.login = async (req,res)=>{
     console.log(email,password);
     try {
         const existingUser = await users.findOne({email,password})
+        // const alluser = await users.find()
         console.log(existingUser);
         if (existingUser !== null && existingUser !== undefined) {
             console.log("inside if function");
+            // console.log("allUser",alluser);
             const token = jwt.sign({userid:existingUser._id},"ss9876")
             res.status(200).json({existingUser,token})
         }
