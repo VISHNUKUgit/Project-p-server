@@ -91,7 +91,8 @@ exports.editProjectDetails = async(req,res)=>{
             github,
             website,
             overview,
-            projectImg:uploadProjectImage,userId},{new:true})
+            projectImg:uploadProjectImage,
+            userId},{new:true})
             await updateProject.save()
             res.status(200).json(updateProject)
     } catch (error) {

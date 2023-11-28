@@ -1,34 +1,38 @@
 const users = require("../DataBase/Models/userSchema");
 const jwt = require('jsonwebtoken');
+// Register
+
 exports.register = async(req, res) => {
-    console.log("inside register controller function");
+    // console.log("inside register controller function");
     const {username,email,password} = req.body
-    console.log(username,email,password);
+    // console.log(username,email,password);
     try{
         const existingUser = await users.findOne({email})
         if (existingUser){
             res.status(406).json("Account already exist@@@ Please Login...")
-            console.log("406");
+            // console.log("406");
         }else{
             const newUser = new users({
                 username,email,password,github:"",linkedin:"",profile:""
             })
             await newUser.save()
             res.status(200).json(newUser)
-            console.log(200);
+            // console.log(200);
         }
     }
     catch(err){
         res.status(401).json(`error:${err}`);
-        console.log("401");
+        // console.log("401");
     }
    
 };
+
+// Login
 exports.login = async (req,res)=>{
-    console.log("inside login function");
-    console.log(req.body);
+    // console.log("inside login function");
+    // console.log(req.body);
     const {email,password} = req.body
-    console.log(email,password);
+    // console.log(email,password);
     try {
         const existingUser = await users.findOne({email,password})
         // const alluser = await users.find()
@@ -47,4 +51,21 @@ exports.login = async (req,res)=>{
     } catch (error) {
         res.status(401).json(`login api failed error: ${error}`)
     }
+}
+
+//Update profile
+
+exports.updateProfile = async(req,res)=>{
+const {username,email,password,github,linkedin,profile} = req.body
+const userId = req.payload
+const uploadimage = req.file?req.file.filename:profile
+
+try {
+    const updatedUser = await users.findByIdAndUpdate({_id:userId},{username,email,password,github,linkedin,profile:uploadimage},{new:true})
+    await updatedUser.save()
+    res.status(200).json(updatedUser)
+
+} catch (error) {
+    res.status(401).json(error)
+}
 }
